@@ -1,9 +1,10 @@
 import * as THREE from 'three'
-import { CuboidCollider, RigidBody } from '@react-three/rapier'
+import { CuboidCollider, RigidBody, InstancedRigidBodies } from '@react-three/rapier'
 import { useMemo, useRef, useState } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
 import { Text, Float, useGLTF } from '@react-three/drei'
+import Confetti from './Confetti'
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const floor1Material = new THREE.MeshPhongMaterial({ color: '#65CEB5', toneMapped: false })
@@ -12,19 +13,21 @@ const obstacleMaterial = new THREE.MeshPhongMaterial({ color: '#132BA8', toneMap
 const wallMaterial = new THREE.MeshPhongMaterial({ color: '#2B53E4', toneMapped: false })
 
 export function BlockStart ({ position = [0, 0, 0] }) {
+  const isMobile = window.matchMedia('(max-width: 479px)').matches
+
   return <group position={ position }>
     {/* Floor */}
     <mesh geometry={ boxGeometry } material={ floor1Material } position-y={ -0.1 }
       scale={[ 4, 0.2, 4 ]} receiveShadow />
-    
+
     <Float floatIntensity={ 0.25 } rotationIntensity={ 0.5 }>
       <Text 
         font='./fonts/bebas-neue-v9-latin-regular.woff'
-        scale={ 0.25 }
+        scale={ isMobile ? 0.2 : 0.25 }
         maxWidth={ 0.25 }
         lineHeight={ 0.95 }
-        textAlign='right'
-        position={[ 0.75, 0.75, 0 ]}
+        textAlign={isMobile ? 'center' : 'right'}
+        position={isMobile ? [ 0, 0.92, 0.5 ] : [ 0.75, 0.75, 0 ]}
         rotation-y={ -0.25}
         >Rolling Rush
           <meshBasicMaterial toneMapped={ false } />
@@ -41,11 +44,10 @@ export function BlockRockets ({ position = [0, 0, 0] }) {
   const rotationDirection = speed > 0 ? -1 : 1
 
   useFrame((state, delta) => {
+    if (!obstacle.current) return
     const time = state.clock.getElapsedTime()
-
     const euler = new THREE.Euler(0, time * speed, 0)
     const quaternion = new THREE.Quaternion().setFromEuler(euler)
-
     obstacle.current.setNextKinematicRotation(quaternion)
   })
 
@@ -99,8 +101,8 @@ export function BlockRockets ({ position = [0, 0, 0] }) {
           />
         </group>
       </group>
-      <CuboidCollider args={[ 0.3, 0.25, 0.5 ]} position={[ 1.25, 0.25, 0 ]} />
-      <CuboidCollider args={[ 0.3, 0.25, 0.5 ]} position={[ -1.25, 0.25, 0 ]} />
+      <CuboidCollider args={[ 0.25, 0.25, 0.5 ]} position={[ 1.25, 0.25, 0 ]} />
+      <CuboidCollider args={[ 0.25, 0.25, 0.5 ]} position={[ -1.25, 0.25, 0 ]} />
     </RigidBody>
   </group>
 }
@@ -111,6 +113,7 @@ export function BlockHammer ({ position = [0, 0, 0] }) {
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
 
   useFrame((state, delta) => {
+    if (!obstacle.current) return
     const time = state.clock.getElapsedTime()
     const y = Math.sin(time * 2 + timeOffset) + 1.25
     obstacle.current.setNextKinematicTranslation({ x: position[0], y: position[1] + y / 2, z: position[2] })
@@ -159,6 +162,7 @@ export function BlockAxe ({ position = [0, 0, 0] }) {
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
 
   useFrame((state, delta) => {
+    if (!obstacle.current) return
     const time = state.clock.getElapsedTime()
     const x = Math.sin(time + timeOffset) * 1.25
     obstacle.current.setNextKinematicTranslation({ x: position[0] + x, y: position[1] + 0.75, z: position[2] })
@@ -246,12 +250,22 @@ export function BlockEnd ({ position = [0, 0, 0] }) {
     flyntRef.current.rotation.y += delta * 0.5
   })
 
+
   return <group position={ position }>
     {/* Floor */}
-    <RigidBody type="fixed" restitution={ 0.2 } friction={ 0 }>
-      <mesh geometry={ boxGeometry } material={ floor1Material } position-y={ -0.08 }
+    <RigidBody type="fixed" colliders={ false } restitution={ 0.2 } friction={ 0 }>
+      <mesh geometry={ boxGeometry } material={ floor1Material } position-y={ -0.1 }
         scale={[ 4, 0.2, 4 ]} receiveShadow />
-    </RigidBody>  
+      {/* Floor Collider */}a
+      <CuboidCollider args={[ 2, 0.1, 2 ]} position={[ 0, -0.1, 0 ]} />
+      {/* Front Back Wall */}
+      <CuboidCollider args={[ 2.1, 0.5, 0.1 ]} position={[ 0, 0.5, -2 ]} />
+      {/* Left Invisible Wall */}
+      <CuboidCollider args={[ 0.1, 0.5, 1.5 ]} position={[ -2.1, 0.5, -0.3 ]} />
+      {/* Right Invisible Wall */}
+      <CuboidCollider args={[ 0.1, 0.5, 1.5 ]} position={[ 2.1, 0.5, -0.3 ]} />
+    </RigidBody>
+    {/* Flynt */}
     <RigidBody type="fixed" colliders="hull" restitution={ 0.2 } friction={ 0 } position={[0, 1, 0]}>
       <Float floatIntensity={ 0.5 } rotationIntensity={ 0.2 }>
         <mesh ref={ flyntRef }
@@ -263,7 +277,6 @@ export function BlockEnd ({ position = [0, 0, 0] }) {
         </mesh>
       </Float>
     </RigidBody>
-
     <Text 
       font='./fonts/bebas-neue-v9-latin-regular.woff'
       scale={ 1 }
@@ -274,7 +287,8 @@ export function BlockEnd ({ position = [0, 0, 0] }) {
       rotation-y={ -0.25}
       >FINISH
         <meshBasicMaterial toneMapped={ false } />
-      </Text>
+    </Text>
+    <Confetti />
   </group>
 }
 

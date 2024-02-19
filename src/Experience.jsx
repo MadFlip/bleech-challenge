@@ -16,17 +16,9 @@ export default function Experience()
     // const matcapTexture = useLoader(TextureLoader, './matcaps/046363_0CC3C3_049B9B_04ACAC-512px.png')
 
     return <>
-        <EffectComposer disableNormalPass>  
-          {/* <Bloom 
-              intensity={ 0.1 }
-              mipmapBlur 
-              luminanceThreshold={ 0 } /> */}
-          {/* <Noise 
-            opacity={ 0.5 } 
-            blendFunction={BlendFunction.DARKEN}
-            /> */}
+        {/* <EffectComposer disableNormalPass>
           <ToneMapping />
-        </EffectComposer>
+        </EffectComposer> */}
         <OrbitControls makeDefault />
         <color attach="background" args={['#0B1E81']} />
         {/* <fog attach="fog" args={['#0B1E81',1, 60]} /> */}

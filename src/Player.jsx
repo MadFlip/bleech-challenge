@@ -27,7 +27,7 @@ export function Player() {
     const ray = new rapier.Ray(origin, direction)
     const hit = world.castRay(ray, 10, true)
 
-    if (hit.toi < 0.15) {
+    if (hit && hit.toi < 0.15) {
       body.current.applyImpulse({ x: 0, y: 0.5, z: 0 })
     }
   }
@@ -46,10 +46,24 @@ export function Player() {
       }
     )
 
+    const unsubscribeMobileJump = useGame.subscribe(
+      (state) => state.altJump,
+      (value) => {
+        if (value) jump()
+      }
+    )
+
     const unsubscribeJump = subscribeKeys(
       (state) => state.jump,
       (value) => {
         if (value) jump()
+      }
+    )
+
+    const unsubscribeMobileAnyKey = useGame.subscribe(
+      (state) => state.altForward || state.altBackward || state.altLeft || state.altRight,
+      (value) => {
+        if (value) start()
       }
     )
 
@@ -61,38 +75,48 @@ export function Player() {
       unsubscribeReset()
       unsubscribeJump()
       unsubscribeAnyKey()
+
+      unsubscribeMobileJump()
+      unsubscribeMobileAnyKey()
     }
   }, [])
 
   useFrame((state, delta) => {
     //  Keyboard controls of the player
     const { forward, backward, left, right } = getKeys()
+    // Gwet mobile controls states
+    const altForward = useGame.getState().altForward
+    const altBackward = useGame.getState().altBackward
+    const altLeft = useGame.getState().altLeft
+    const altRight = useGame.getState().altRight
+
     const impulse = { x: 0, y: 0, z: 0 }
     const torque = { x: 0, y: 0, z: 0 }
 
     const impulseStrength = 0.6 * delta
     const torqueStrength = 0.2 * delta
 
-    if (forward) {
+    if (forward || altForward) {
       impulse.z -= impulseStrength
       torque.x -= torqueStrength
     }
     
-    if (backward) {
+    if (backward || altBackward) {
       impulse.z += impulseStrength
       torque.x += torqueStrength
     }
 
-    if (left) {
+    if (left || altLeft) {
       impulse.x -= impulseStrength
       torque.z += torqueStrength
     }
 
-    if (right) {
+    if (right || altRight) {
       impulse.x += impulseStrength
       torque.z -= torqueStrength
     }
 
+    if (!body.current) return
     body.current.applyImpulse(impulse)
     body.current.applyTorqueImpulse(torque)
   

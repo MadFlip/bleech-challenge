@@ -29,5 +29,12 @@ export default create(subscribeWithSelector((set) => {
         return {}
       })
     },
+
+    // Mobile controls
+    altForward: false,
+    altBackward: false,
+    altLeft: false,
+    altRight: false,
+    altJump: false,
   }
 }))
