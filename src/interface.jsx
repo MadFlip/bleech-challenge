@@ -1,11 +1,16 @@
 import { useKeyboardControls } from "@react-three/drei"
 import useGame from "./stores/useGame"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { addEffect } from "@react-three/fiber"
 
 export default function Interface() {
     const restart = useGame((state) => state.restart)
     const phase = useGame((state) => state.phase)
+    const altJump = useGame((state) => state.altJump)
+    const altForward = useGame((state) => state.altForward)
+    const altBackward = useGame((state) => state.altBackward)
+    const altLeft = useGame((state) => state.altLeft)
+    const altRight = useGame((state) => state.altRight)
 
     const forward = useKeyboardControls((state) => state.forward)
     const backward = useKeyboardControls((state) => state.backward)
@@ -13,6 +18,23 @@ export default function Interface() {
     const right = useKeyboardControls((state) => state.right)
     const jump = useKeyboardControls((state) => state.jump)
     const timer = useRef()
+
+    const handleJump = () => {
+      useGame.setState({ altJump: true })
+
+      setTimeout(() => {
+        useGame.setState({ altJump: false })
+      }, 100)
+    }
+
+    const moveForward = () => useGame.setState({ altForward: true })
+    const stopForward = () => useGame.setState({ altForward: false })
+    const moveLeft = () => useGame.setState({ altLeft: true })
+    const stopLeft = () => useGame.setState({ altLeft: false })
+    const moveRight = () => useGame.setState({ altRight: true })
+    const stopRight = () => useGame.setState({ altRight: false })
+    const moveBackward = () => useGame.setState({ altBackward: true })
+    const stopBackward = () => useGame.setState({ altBackward: false })
 
     useEffect(() => {
       const unsubscribeEffect = addEffect(() => {
@@ -37,22 +59,37 @@ export default function Interface() {
       }
     }, [])
 
-
     return <div className="interface">
       <div className="time" ref={ timer }>0.00</div>
       {phase === 'ended' && <div className="restart" onClick={ restart }>Restart</div>}
 
       <div className="controls">
-        <div className="raw">
-          <div className={`key ${forward ? 'active' : ''}`}>↑</div>
+        <div className="left">
+          <div className="row">
+            <div className={`key ${forward || altForward ? 'active' : ''}`} 
+              onTouchStart={moveForward}
+              onTouchEnd={stopForward}
+            >↑</div>
+          </div>
+          <div className="row">
+            <div className={`key ${left||altLeft ? 'active' : ''}`} 
+              onTouchStart={moveLeft}
+              onTouchEnd={stopLeft}
+            >←</div>
+            <div className={`key ${backward || altBackward ? 'active' : ''}`}
+              onTouchStart={moveBackward}
+              onTouchEnd={stopBackward}
+            >↓</div>
+            <div className={`key ${right || altRight ? 'active' : ''}`}
+              onTouchStart={moveRight}
+              onTouchEnd={stopRight}
+            >→</div>
+          </div>
         </div>
-        <div className="raw">
-          <div className={`key ${left ? 'active' : ''}`}>←</div>
-          <div className={`key ${backward ? 'active' : ''}`}>↓</div>
-          <div className={`key ${right ? 'active' : ''}`}>→</div>
-        </div>
-        <div className="raw">
-          <div className={`key large ${jump ? 'active' : ''}`}>Jump</div>
+        <div className="row right">
+          <div className={`key large ${jump || altJump ? 'active' : ''}`}
+            onTouchStart={handleJump}
+          >Jump</div>
         </div>
       </div>
   </div>
