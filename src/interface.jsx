@@ -2,8 +2,10 @@ import { useKeyboardControls } from "@react-three/drei"
 import useGame from "./stores/useGame"
 import { useRef, useEffect, useState } from "react"
 import { addEffect } from "@react-three/fiber"
+import { audio, playAudio } from './Audio.jsx'
 
 export default function Interface() {
+  
     const restart = useGame((state) => state.restart)
     const phase = useGame((state) => state.phase)
     const altJump = useGame((state) => state.altJump)
@@ -18,6 +20,16 @@ export default function Interface() {
     const right = useKeyboardControls((state) => state.right)
     const jump = useKeyboardControls((state) => state.jump)
     const timer = useRef()
+    const firstInteraction = useGame((state) => state.firstInteraction)
+    const finishSound = useGame((state) => state.finishSound)
+
+    useEffect(() => {
+      playAudio(audio.bg, 0.2, true)
+    }, [firstInteraction])
+
+    useEffect(() => {
+      finishSound && playAudio(audio.bang, 1)
+    }, [finishSound])
 
     const handleJump = () => {
       useGame.setState({ altJump: true })

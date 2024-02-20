@@ -4,6 +4,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useState, useEffect, useRef } from "react";
 import * as THREE from "three";
 import useGame from "./stores/useGame";
+import { audio, playAudio } from "./Audio";
 
 export function Player() {
   const [ subscribeKeys, getKeys] = useKeyboardControls()
@@ -13,7 +14,6 @@ export function Player() {
   const [ smoothedCameraTarget ] = useState(() => new THREE.Vector3())
 
   const matcapTexture = useLoader(THREE.TextureLoader, './matcaps/DEE3E8_A6AEB5_BCC4CC_BCC4C4-512px.png')
-  
 
   const start = useGame((state) => state.start)
   const end = useGame((state) => state.end)
@@ -29,6 +29,7 @@ export function Player() {
 
     if (hit && hit.toi < 0.15) {
       body.current.applyImpulse({ x: 0, y: 0.5, z: 0 })
+      playAudio(audio.jump, 1)
     }
   }
 
@@ -156,7 +157,8 @@ export function Player() {
     linearDamping={ 0.5 }
     angularDamping={ 0.5 }
     friction={ 1 } 
-    position={[ 0, 1, 0]}>
+    position={[ 0, 1, 0]}
+    >
     <mesh castShadow>
       <icosahedronGeometry args={[0.3, 4]} />
       <meshMatcapMaterial matcap={ matcapTexture } 

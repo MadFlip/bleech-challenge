@@ -5,6 +5,7 @@ import { useFrame, useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
 import { Text, Float, useGLTF } from '@react-three/drei'
 import Confetti from './Confetti'
+import { audio, playAudio } from './Audio.jsx'
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const floor1Material = new THREE.MeshPhongMaterial({ color: '#65CEB5', toneMapped: false })
@@ -58,7 +59,13 @@ export function BlockRockets ({ position = [0, 0, 0] }) {
         scale={[ 4, 0.2, 4 ]} receiveShadow />
     </RigidBody>
     {/* Obstacle  */}
-    <RigidBody colliders={ false } ref={ obstacle } type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
+    <RigidBody 
+      colliders={ false } 
+      ref={ obstacle } type="kinematicPosition" 
+      position={[ 0, 0.3, 0 ]} restitution={ 0.2 }
+      friction={ 0 }
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      >
       <group scale={1.25}>
         <group position={[1, 0, 0]} rotation={[0, Math.PI / 2 * rotationDirection, 0]}>
           <mesh
@@ -130,7 +137,9 @@ export function BlockHammer ({ position = [0, 0, 0] }) {
         scale={[ 4, 0.2, 4 ]} receiveShadow />
     </RigidBody>
     {/* Obstacle  */}
-    <RigidBody ref={ obstacle } type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
+    <RigidBody ref={ obstacle } 
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
       <group>
         {/* Hammer Head */}
         <mesh
@@ -156,7 +165,7 @@ export function BlockHammer ({ position = [0, 0, 0] }) {
   </group>
 }
 
-export function BlockAxe ({ position = [0, 0, 0] }) {
+export function BlockRolling ({ position = [0, 0, 0] }) {
   const obstacle = useRef()
   const { nodes } = useGLTF('./obstacle-1.glb')
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
@@ -179,7 +188,9 @@ export function BlockAxe ({ position = [0, 0, 0] }) {
         scale={[ 4, 0.2, 4 ]} receiveShadow />
     </RigidBody>
     {/* Obstacle  */}
-    <RigidBody ref={ obstacle } type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
+    <RigidBody ref={ obstacle } 
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
       <group scale={1.4}>
         <mesh
           castShadow
@@ -249,7 +260,6 @@ export function BlockEnd ({ position = [0, 0, 0] }) {
   useFrame((state, delta) => {
     flyntRef.current.rotation.y += delta * 0.5
   })
-
 
   return <group position={ position }>
     {/* Floor */}
@@ -321,7 +331,7 @@ export function Level({ count = 5, types = [
     BlockNarrowBridgeRight,
     BlockNarrowBridgeCenter,
     BlockRockets,
-    BlockAxe
+    BlockRolling
   ], seed = 0}) {
   const blocks = useMemo(() => {
     const blocks = []
