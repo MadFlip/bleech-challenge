@@ -78,7 +78,6 @@ export default function Confetti() {
 
     return (
         <group>
-
             <InstancedRigidBodies instances={ cubeIntances } restitution={ 1 }>
                 <instancedMesh castShadow args={[ null, null, cubesCount ]} frustumCulled={false}>
                     <boxGeometry />
