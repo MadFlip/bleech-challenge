@@ -20,16 +20,27 @@ export default function Interface() {
     const right = useKeyboardControls((state) => state.right)
     const jump = useKeyboardControls((state) => state.jump)
     const timer = useRef()
+    const bestTime = useRef()
     const firstInteraction = useGame((state) => state.firstInteraction)
     const finishSound = useGame((state) => state.finishSound)
+    const finishSoundPlayed = useGame((state) => state.finishSoundPlayed)
+    const sound = useGame((state) => state.sound)
+    const toggleSound = useGame((state) => state.toggleSound)
 
+    // Play background sound, listen to sound on/off changes
     useEffect(() => {
-      playAudio(audio.bg, 0.2, true)
-    }, [firstInteraction])
+      playAudio(audio.bg, 0.2, true, sound, false)
+    }, [firstInteraction, sound])
 
+    // Play finish sound, listen to sound on/off changes
     useEffect(() => {
-      finishSound && playAudio(audio.bang, 1)
-    }, [finishSound])
+      if (!finishSoundPlayed && finishSound) {
+        playAudio(audio.bang, 1, false, sound)
+        useGame.setState({ finishSoundPlayed: true })
+      } else {
+        playAudio(audio.bang, 0, false, sound)
+      }
+    }, [finishSound, sound])
 
     const handleJump = () => {
       useGame.setState({ altJump: true })
@@ -63,6 +74,11 @@ export default function Interface() {
         
         if (timer.current) {
           timer.current.textContent = elapsedTime
+          // Update best time
+          if (state.phase === 'ended' && (elapsedTime * 1 < state.bestTime * 1 || state.bestTime * 1 === 0)) {
+            bestTime.current.textContent = `Best: ${elapsedTime}`
+            useGame.setState({ bestTime: elapsedTime })
+          }
         }
       })
 
@@ -72,7 +88,15 @@ export default function Interface() {
     }, [])
 
     return <div className="interface">
-      <div className="time" ref={ timer }>0.00</div>
+      <div className="time">
+        <div className="time-best" ref={ bestTime }>Best: 0.00</div>
+        <div className="time-active" ref={ timer }>0.00</div>
+      </div>
+      <div className="sound" onClick={() => toggleSound()}>
+        sound
+        <br />
+        <span className={ sound ? 'sound-state sound-state--on' : 'sound-state sound-state--off' }>{sound ? 'on' : 'off'}</span>
+      </div>
       {phase === 'ended' && <div className="restart" onClick={ restart }>Restart</div>}
 
       <div className="controls">

@@ -1,7 +1,6 @@
 import { InstancedRigidBodies } from '@react-three/rapier'
 import { useMemo } from 'react'
 import useGame from './stores/useGame'
-// import { PositionalAudio } from '@react-three/drei'
 
 export default function Confetti() {
     const gameEnded = useGame((state) => state.phase) === 'ended'
@@ -79,7 +78,6 @@ export default function Confetti() {
 
     return (
         <group>
-            {/* <PositionalAudio autoplay loop={false} url='./audio/bang-2.mp3' distance={1} /> */}
             <InstancedRigidBodies instances={ cubeIntances } restitution={ 1 }>
                 <instancedMesh castShadow args={[ null, null, cubesCount ]} frustumCulled={false}>
                     <boxGeometry />

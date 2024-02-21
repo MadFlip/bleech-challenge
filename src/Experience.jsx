@@ -11,17 +11,18 @@ export default function Experience()
 {
     const blocksCount = useGame((state) => state.blocksCount)
     const blocksSeed = useGame((state) => state.blocksSeed)
+    const isMobile = window.matchMedia('(max-width: 767px)').matches
         return <>
         <EffectComposer disableNormalPass>
-          <Noise
+          {/* <Noise
             opacity={0.2} // Amount of noise
             blendFunction={BlendFunction.MULTIPLY} // blend mode
-            />
-          <ChromaticAberration
+            /> */}
+          {!isMobile && <ChromaticAberration
             blendFunction={BlendFunction.NORMAL} // blend mode
-            offset={[0.001, 0.001]} // color offset
+            offset={[0.0015, 0.0015]} // color offset
             opacity={1} // Amount of chromatic aberration
-            />
+            /> }
           <ToneMapping />
         </EffectComposer>
         <OrbitControls makeDefault />

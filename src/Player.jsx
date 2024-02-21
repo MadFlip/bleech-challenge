@@ -19,6 +19,7 @@ export function Player() {
   const end = useGame((state) => state.end)
   const blocksCount = useGame((state) => state.blocksCount)
   const restart = useGame((state) => state.restart)
+  const sound = useGame((state) => state.sound)
 
   const jump = () => {
     const origin = body.current.translation()
@@ -29,7 +30,7 @@ export function Player() {
 
     if (hit && hit.toi < 0.15) {
       body.current.applyImpulse({ x: 0, y: 0.5, z: 0 })
-      playAudio(audio.jump, 1)
+      playAudio(audio.jump, 1, false, sound)
     }
   }
 
@@ -80,7 +81,7 @@ export function Player() {
       unsubscribeMobileJump()
       unsubscribeMobileAnyKey()
     }
-  }, [])
+  }, [sound])
 
   useFrame((state, delta) => {
     //  Keyboard controls of the player

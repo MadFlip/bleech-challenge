@@ -5,14 +5,21 @@ export default create(subscribeWithSelector((set) => {
   return {
     blocksCount: 12,
     blocksSeed: 0,
+
     // Time
     startTime: 0,
     endTime: 0,
+    bestTime: 0,
+
+    // Sounds control
+    sound: false,
+    firstInteraction: false,
+    finishSound: false,
+    finishSoundPlayed: false,
+    toggleSound: () => set((state) => ({ sound: !state.sound })),
 
     // Phases
     phase: 'ready',
-    firstInteraction: false,
-    finishSound: false,
     start: () => {
       set((state) => {
         if (state.phase === 'ready') return { phase: 'playing', startTime: Date.now(), firstInteraction: true }
@@ -21,7 +28,7 @@ export default create(subscribeWithSelector((set) => {
     },
     restart: () => {
       set((state) => {
-        if (state.phase === 'playing' || state.phase === 'ended') return { phase: 'ready', blocksSeed: Math.random(), finishSound: false}
+        if (state.phase === 'playing' || state.phase === 'ended') return { phase: 'ready', blocksSeed: Math.random(), finishSound: false, finishSoundPlayed: false}
         return {}
       })
     },

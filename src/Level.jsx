@@ -6,6 +6,7 @@ import { TextureLoader } from 'three'
 import { Text, Float, useGLTF } from '@react-three/drei'
 import Confetti from './Confetti'
 import { audio, playAudio } from './Audio.jsx'
+import useGame from './stores/useGame'
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const floor1Material = new THREE.MeshPhongMaterial({ color: '#65CEB5', toneMapped: false })
@@ -14,7 +15,8 @@ const obstacleMaterial = new THREE.MeshPhongMaterial({ color: '#132BA8', toneMap
 const wallMaterial = new THREE.MeshPhongMaterial({ color: '#2B53E4', toneMapped: false })
 
 export function BlockStart ({ position = [0, 0, 0] }) {
-  const isMobile = window.matchMedia('(max-width: 479px)').matches
+  const isMobile = window.matchMedia('(max-width: 560px)').matches
+  const isDesktop = window.matchMedia('(min-width: 1280px)').matches
 
   return <group position={ position }>
     {/* Floor */}
@@ -24,12 +26,12 @@ export function BlockStart ({ position = [0, 0, 0] }) {
     <Float floatIntensity={ 0.25 } rotationIntensity={ 0.5 }>
       <Text 
         font='./fonts/bebas-neue-v9-latin-regular.woff'
-        scale={ isMobile ? 0.2 : 0.25 }
+        scale={ isMobile ? 0.2 : isDesktop ? 0.4 : 0.25 }
         maxWidth={ 0.25 }
         lineHeight={ 0.95 }
         textAlign={isMobile ? 'center' : 'right'}
-        position={isMobile ? [ 0, 0.92, 0.5 ] : [ 0.75, 0.75, 0 ]}
-        rotation-y={ -0.25}
+        position={isMobile ? [ 0, 0.92, 0.5 ] : isDesktop ? [ 0.75, 0.75, 0 ] : [ 0.3, 0.75, 0 ]}
+        rotation-y={isDesktop ? -0.5 : -0.25}
         >Rolling Rush
           <meshBasicMaterial toneMapped={ false } />
         </Text>
@@ -43,6 +45,7 @@ export function BlockRockets ({ position = [0, 0, 0] }) {
   const { nodes } = useGLTF('./obstacle-3.glb')
   const [ speed ] = useState(() => (Math.random() + 0.5) * (Math.random() < 0.5 ? -1 : 1))
   const rotationDirection = speed > 0 ? -1 : 1
+  const sound = useGame((state) => state.sound)
 
   useFrame((state, delta) => {
     if (!obstacle.current) return
@@ -64,7 +67,7 @@ export function BlockRockets ({ position = [0, 0, 0] }) {
       ref={ obstacle } type="kinematicPosition" 
       position={[ 0, 0.3, 0 ]} restitution={ 0.2 }
       friction={ 0 }
-      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false, sound)}
       >
       <group scale={1.25}>
         <group position={[1, 0, 0]} rotation={[0, Math.PI / 2 * rotationDirection, 0]}>
@@ -118,6 +121,7 @@ export function BlockHammer ({ position = [0, 0, 0] }) {
   const obstacle = useRef()
   const { nodes } = useGLTF('./obstacle-2.glb')
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
+  const sound = useGame((state) => state.sound)
 
   useFrame((state, delta) => {
     if (!obstacle.current) return
@@ -138,7 +142,7 @@ export function BlockHammer ({ position = [0, 0, 0] }) {
     </RigidBody>
     {/* Obstacle  */}
     <RigidBody ref={ obstacle } 
-      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false, sound)}
       type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
       <group>
         {/* Hammer Head */}
@@ -169,6 +173,7 @@ export function BlockRolling ({ position = [0, 0, 0] }) {
   const obstacle = useRef()
   const { nodes } = useGLTF('./obstacle-1.glb')
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
+  const sound = useGame((state) => state.sound)
 
   useFrame((state, delta) => {
     if (!obstacle.current) return
@@ -189,7 +194,7 @@ export function BlockRolling ({ position = [0, 0, 0] }) {
     </RigidBody>
     {/* Obstacle  */}
     <RigidBody ref={ obstacle } 
-      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false)}
+      onCollisionEnter={ () => playAudio(audio.hit, 0.75, false, sound)}
       type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
       <group scale={1.4}>
         <mesh
