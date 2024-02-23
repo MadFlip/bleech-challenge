@@ -3,8 +3,10 @@ import { subscribeWithSelector } from 'zustand/middleware'
 
 export default create(subscribeWithSelector((set) => {
   return {
-    blocksCount: 12,
+    blocksCount: 20,
     blocksSeed: 0,
+    bumpersOn: false,
+    toggleBumpers: () => set((state) => ({ bumpersOn: !state.bumpersOn })),
 
     // Time
     startTime: 0,

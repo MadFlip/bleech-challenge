@@ -26,6 +26,8 @@ export default function Interface() {
     const finishSoundPlayed = useGame((state) => state.finishSoundPlayed)
     const sound = useGame((state) => state.sound)
     const toggleSound = useGame((state) => state.toggleSound)
+    const bumpers = useGame((state) => state.bumpersOn)
+    const toggleBumpers = useGame((state) => state.toggleBumpers)
 
     // Play background sound, listen to sound on/off changes
     useEffect(() => {
@@ -96,6 +98,11 @@ export default function Interface() {
         sound
         <br />
         <span className={ sound ? 'sound-state sound-state--on' : 'sound-state sound-state--off' }>{sound ? 'on' : 'off'}</span>
+      </div>
+      <div className="difficulty" onClick={() => toggleBumpers()}>
+        Bumpers
+        <br />
+        {bumpers ? 'on' : 'off'}
       </div>
       {phase === 'ended' && <div className="restart" onClick={ restart }>Restart</div>}
 

@@ -5,6 +5,7 @@ import { useFrame, useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
 import { Text, Float, useGLTF } from '@react-three/drei'
 import Confetti from './Confetti'
+import Bumpers from './Bumpers.jsx'
 import { audio, playAudio } from './Audio.jsx'
 import useGame from './stores/useGame'
 
@@ -349,6 +350,7 @@ export function Level({ count = 5, types = [
   }, [ count, types, seed])
 
   return <>
+    <Bumpers />
     <BlockStart position={[0, 0, 0]} />
     {blocks.map((Block, index) => {
       return <Block key={index} position={[0, 0, -(index + 1) * 4 ]} />
