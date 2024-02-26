@@ -5,10 +5,14 @@ import BlockEnd from './Blocks/BlockEnd.jsx'
 import BlockHammer from './Blocks/BlockHammer.jsx'
 import BlockRockets from './Blocks/BlockRockets.jsx'
 import BlockRoller from './Blocks/BlockRoller.jsx'
-import BlockNarrowBridge from './Blocks/BlockBridge.jsx'
+import BlockBridge from './Blocks/BlockBridge.jsx'
 
 export function Level({ count = 5, types = [
+  BlockHammer,
+  BlockRoller,
+  BlockBridge,
   BlockRockets,
+  BlockBridge
   ], seed = 0}) {
   const blocks = useMemo(() => {
     const blocks = []

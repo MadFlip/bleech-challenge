@@ -1,7 +1,7 @@
 import { RigidBody } from '@react-three/rapier'
 import { boxGeometry, materials } from '../Materials'
 
-export default function BlockNarrowBridge ({ position = [0, 0, 0]}) {
+export default function BlockBridge ({ position = [0, 0, 0]}) {
   // set random x position -1.5, 0, 1.5
   const xPosition = [-1.5, 0, 1.5][Math.floor(Math.random() * 3)]
 
