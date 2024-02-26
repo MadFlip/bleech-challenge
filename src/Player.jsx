@@ -1,10 +1,10 @@
-import { useFrame, useLoader } from "@react-three/fiber";
-import { RigidBody, useRapier } from "@react-three/rapier";
-import { useKeyboardControls } from "@react-three/drei";
-import { useState, useEffect, useRef } from "react";
-import * as THREE from "three";
-import useGame from "./stores/useGame";
-import { audio, playAudio } from "./Audio";
+import { useFrame, useLoader } from '@react-three/fiber'
+import { RigidBody, useRapier } from '@react-three/rapier'
+import { useKeyboardControls } from '@react-three/drei'
+import { useState, useEffect, useRef } from 'react'
+import * as THREE from 'three'
+import useGame from './stores/useGame'
+import { audio, playAudio } from './Audio'
 
 export function Player() {
   const [ subscribeKeys, getKeys] = useKeyboardControls()
@@ -162,7 +162,7 @@ export function Player() {
     >
     <mesh castShadow>
       <icosahedronGeometry args={[0.3, 4]} />
-      <meshMatcapMaterial matcap={ matcapTexture } 
+      <meshMatcapMaterial matcap={ matcapTexture }
         flatShading 
         toneMapped={ false } />
     </mesh>

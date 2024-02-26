@@ -1,11 +1,10 @@
-import { useKeyboardControls } from "@react-three/drei"
-import useGame from "./stores/useGame"
-import { useRef, useEffect, useState } from "react"
-import { addEffect } from "@react-three/fiber"
+import { useKeyboardControls } from '@react-three/drei'
+import useGame from './stores/useGame'
+import { useRef, useEffect } from 'react'
+import { addEffect } from '@react-three/fiber'
 import { audio, playAudio } from './Audio.jsx'
 
 export default function Interface() {
-  
     const restart = useGame((state) => state.restart)
     const phase = useGame((state) => state.phase)
     const altJump = useGame((state) => state.altJump)

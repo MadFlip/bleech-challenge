@@ -1,11 +1,12 @@
-import { OrbitControls } from '@react-three/drei'
+// import { OrbitControls } from '@react-three/drei'
 import Lights from './Lights.jsx'
 import { Level } from './Level.jsx'
 import { Player } from './Player.jsx'
 import { Physics } from '@react-three/rapier'
 import useGame from './stores/useGame.jsx'
-import { Noise, ToneMapping, EffectComposer, ChromaticAberration } from '@react-three/postprocessing'
+import { ToneMapping, EffectComposer, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
+import { Perf } from 'r3f-perf'
 
 export default function Experience()
 {
@@ -13,11 +14,10 @@ export default function Experience()
     const blocksSeed = useGame((state) => state.blocksSeed)
     const isMobile = window.matchMedia('(max-width: 767px)').matches
         return <>
+          <Perf 
+            position='bottom-left'
+          />
         <EffectComposer disableNormalPass>
-          {/* <Noise
-            opacity={0.2} // Amount of noise
-            blendFunction={BlendFunction.MULTIPLY} // blend mode
-            /> */}
           {!isMobile && <ChromaticAberration
             blendFunction={BlendFunction.NORMAL} // blend mode
             offset={[0.0015, 0.0015]} // color offset
@@ -25,7 +25,7 @@ export default function Experience()
             /> }
           <ToneMapping />
         </EffectComposer>
-        <OrbitControls makeDefault />
+        {/* <OrbitControls makeDefault /> */}
         <color attach="background" args={['#0B1E81']} />
         <fog attach="fog" args={['#0B1E81',1, 80]} />
         <Physics debug = { 0 }>

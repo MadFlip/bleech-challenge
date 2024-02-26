@@ -3,7 +3,7 @@ import { subscribeWithSelector } from 'zustand/middleware'
 
 export default create(subscribeWithSelector((set) => {
   return {
-    blocksCount: 20,
+    blocksCount: 12,
     blocksSeed: 0,
     bumpersOn: false,
     toggleBumpers: () => set((state) => ({ bumpersOn: !state.bumpersOn })),
