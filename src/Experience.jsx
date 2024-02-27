@@ -14,14 +14,14 @@ export default function Experience()
     const blocksSeed = useGame((state) => state.blocksSeed)
     const isMobile = window.matchMedia('(max-width: 767px)').matches
         return <>
-          <Perf 
+          {/* <Perf 
             position='bottom-left'
-          />
+          /> */}
         <EffectComposer disableNormalPass>
           {!isMobile && <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL} // blend mode
-            offset={[0.0015, 0.0015]} // color offset
-            opacity={1} // Amount of chromatic aberration
+            blendFunction={ BlendFunction.NORMAL } // blend mode
+            offset={[ 0.0012, 0.0012 ]} // color offset
+            opacity={ 1 } // Amount of chromatic aberration
             /> }
           <ToneMapping />
         </EffectComposer>

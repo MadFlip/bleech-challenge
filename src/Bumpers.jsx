@@ -1,76 +1,79 @@
-import { InstancedRigidBodies } from '@react-three/rapier'
+import { CuboidCollider, InstancedRigidBodies, RigidBody } from '@react-three/rapier'
 import { useMemo, useRef } from 'react'
 import useGame from './stores/useGame'
-import { Instance, Instances} from '@react-three/drei'
+import { Grid } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-// #65CEB5
-// #2B53E4
+import { materials } from './Materials'
+import * as THREE from 'three'
+
+const bumperGeometry = new THREE.BoxGeometry(0.02, 0.195, 4)
+
 export default function Bumpers() {
-    const blocksCount = useGame((state) => state.blocksCount)
-    const bumpersOn = useGame((state) => state.bumpersOn)
-    const bumpersCount = 2
-    const bumperLegsCount = 2 * bumpersCount * blocksCount
-    const bumperOffset = 2.1
-    const bumpersLegs = useRef()
-    const rigidBumpers = useRef()
-    const bumpersGroup = useRef()
+  const blocksCount = useGame((state) => state.blocksCount)
+  const bumpersOn = useGame((state) => state.bumpersOn)
+  const bumpersCount = 2
+  const bumperOffset = 2 + 0.01
+  const rigidBumpers = useRef()
+  const bumpersGroup = useRef()
+  const grid = useRef()
 
-    const bumperIntances = useMemo(() => {
-        const instances = []
-        for (let i = 0; i < bumpersCount; i++) {
-        instances.push({
-            key: 'bumper_' + i,
-            // position first on the -2 and second on the 2
-            position: [i % 2 === 0 ? bumperOffset * -1 : bumperOffset, -0.8, blocksCount * 4 / -2 - 2],
-        })
-        }
-
-        return instances
-    }, [])
-
-    // position instanced mesh position on left and right of the bumpers
-    const bumperLegsPosition = useMemo(() => {
-        const positions = []
-        for (let i = 0; i < bumperLegsCount; i++) {
-        positions.push([
-            i % 2 === 0 ? (bumperOffset + 0.1) * -1 : bumperOffset + 0.1,
-            -1.05,
-            // evently distribute the legs from the end to start of the bumper Z axis
-            blocksCount * -4 / 2 + (i % 2 === 0 ? i : i - 1) - blocksCount * 2 - 1
-        ])
-        }
-        return positions
-    }, [])
-
-    useFrame((state, delta) => {
-        bumpersLegs.current.position.y = !bumpersOn ? Math.max(bumpersLegs.current.position.y - delta * 0.5, 0) : Math.min(bumpersLegs.current.position.y + delta * 0.5, 1)
-        
-        // when animation is done, set visible to false
-        bumpersLegs.current.position.y === 0 ?  bumpersGroup.current.visible = false :  bumpersGroup.current.visible = true
-
-        const y = bumpersLegs.current.position.y - 0.75
-        rigidBumpers.current.map((instance, index) => {
-            instance.setTranslation({ x: instance.translation().x, y, z: instance.translation().z })
-        })
-        
+  const bumperIntances = useMemo(() => {
+    const instances = []
+    for (let i = 0; i < bumpersCount; i++) {
+    instances.push({
+      key: 'bumper_' + i,
+      // position first on the -2 and second on the 2
+      position: [i % 2 === 0 ? bumperOffset * -1 : bumperOffset, -0.1, 0],
     })
-    
+    }
+    return instances
+  }, [])
 
-    return (
-        <group ref={ bumpersGroup }>
-            <InstancedRigidBodies ref={ rigidBumpers } type="fixed" instances={ bumperIntances } restitution={ 1 }>
-                <instancedMesh args={[ null, null, bumpersCount ]}>
-                    <boxGeometry args={[ 0.1, 0.1, 4 * blocksCount ]} />
-                    <meshPhongMaterial color="#2B53E4"/>
-                </instancedMesh>
-            </InstancedRigidBodies>
-            <Instances ref={ bumpersLegs }>
-                <boxGeometry args={[ 0.1, 0.5, 0.1 ]} />
-                <meshPhongMaterial color="#fff"/>
-                {bumperLegsPosition.map((position, index) => (
-                    <Instance key={index} position={position} />
-                ))}
-            </Instances>
-        </group>
-    )
+  useFrame((state, delta) => {
+    const duration = 0.5
+
+    if (!bumpersOn) {
+      rigidBumpers.current.map((instance, index) => {
+        instance.setTranslation({
+          x: instance.translation().x,
+          y: Math.max(instance.translation().y - delta * duration, -0.1),
+          z: instance.translation().z })
+      })
+
+      grid.current.position.y = Math.max(grid.current.position.y - delta * duration * 6, -2)
+    } else {
+      rigidBumpers.current.map((instance, index) => {
+        instance.setTranslation({ x: instance.translation().x,
+        y: Math.min(instance.translation().y + delta * duration, 0.2),
+        z: instance.translation().z })
+      })
+
+      grid.current.position.y = Math.min(grid.current.position.y + delta * duration * 6, -0.2)
+    }
+  })
+
+  return (
+    <group>
+      <group ref={ bumpersGroup } scale-z={ blocksCount } position-z={(blocksCount) / 2 * -4 - 2}>
+        <InstancedRigidBodies ref={ rigidBumpers } type="fixed" instances={ bumperIntances } restitution={ 1 }>
+          <instancedMesh args={[ null, null, bumpersCount ]} material={ materials.blueLight } geometry={ bumperGeometry } receiveShadow>
+          </instancedMesh>
+        </InstancedRigidBodies>
+        { bumpersOn && <RigidBody key={ bumpersOn } type="fixed" restitution={ 0.2 } friction={ 0 } colliders={ false }>
+          <CuboidCollider args={[ 2, 0.05, 2 ]} position={[ 0, -0.25, 0 ]}/>
+        </RigidBody>}
+      </group>
+      <Grid ref={ grid }
+        infiniteGrid={ true } 
+        position={[0, -2, 0]}
+        fadeDistance={ 60 }
+        fadeStrength={ 5 }
+        cellSize={ 0 }
+        sectionColor={ '#2B53E4' }
+        sectionSize={ 2 }
+        sectionThickness={ 1 }
+        followCamera={ true }
+        />
+    </group>
+  )
 }

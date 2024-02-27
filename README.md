@@ -1,8 +1,12 @@
-# bleech-challenge
+# Bleech Challenge
 
-Marble race game made with R3F.
+Marble race game made with R3F. It's inspired by the last lesson of the [Three.js Journey](https://threejs-journey.com/lessons/create-a-game-with-r3f) course.
 
-Run this followed commands:
+
+![screenshot](screenshot.png)
+
+
+To run the project, execute the following commands:
 
 ``` bash
 # Install dependencies (only the first time)

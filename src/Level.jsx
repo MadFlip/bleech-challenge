@@ -25,7 +25,7 @@ export function Level({ count = 5, types = [
   }, [ count, types, seed])
 
   return <>
-    {/* <Bumpers /> */}
+    <Bumpers />
     <BlockStart position={[0, 0, 0]}/>
     {blocks.map((Block, index) => {
       return <Block key={index} position={[0, 0, -(index + 1) * 4 ]}/>
