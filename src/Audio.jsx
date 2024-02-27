@@ -5,7 +5,6 @@ const audio = {
   jump: new Audio('./audio/jump.mp3')
 }
 
-
 function playAudio(audio, volume = 1, loop = false, sound = true, fromStart = true) {
     if (sound) {
       if (fromStart) {

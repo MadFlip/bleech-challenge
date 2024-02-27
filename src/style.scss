@@ -144,6 +144,28 @@ body,
   }
 }
 
+.difficulty {
+  pointer-events: auto;
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  text-align: center;
+  transform: translateX(-50%) rotateX(5deg) rotateY(5deg);
+
+  @media (min-width: 768px) {
+    font-size: 44px;
+    left: 40px;
+    bottom: 40px;
+    top: auto;
+    transform: skew(-4deg, -4deg) rotate(-4deg);
+    text-align: left;
+  }
+}
+
 .controls {
   position: absolute;
   bottom: 8%;

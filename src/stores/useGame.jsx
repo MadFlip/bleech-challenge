@@ -5,6 +5,8 @@ export default create(subscribeWithSelector((set) => {
   return {
     blocksCount: 12,
     blocksSeed: 0,
+    bumpersOn: false,
+    toggleBumpers: () => set((state) => ({ bumpersOn: !state.bumpersOn })),
 
     // Time
     startTime: 0,

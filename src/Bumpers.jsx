@@ -1,0 +1,79 @@
+import { CuboidCollider, InstancedRigidBodies, RigidBody } from '@react-three/rapier'
+import { useMemo, useRef } from 'react'
+import useGame from './stores/useGame'
+import { Grid } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { materials } from './Materials'
+import * as THREE from 'three'
+
+const bumperGeometry = new THREE.BoxGeometry(0.02, 0.195, 4)
+
+export default function Bumpers() {
+  const blocksCount = useGame((state) => state.blocksCount)
+  const bumpersOn = useGame((state) => state.bumpersOn)
+  const bumpersCount = 2
+  const bumperOffset = 2 + 0.01
+  const rigidBumpers = useRef()
+  const bumpersGroup = useRef()
+  const grid = useRef()
+
+  const bumperIntances = useMemo(() => {
+    const instances = []
+    for (let i = 0; i < bumpersCount; i++) {
+    instances.push({
+      key: 'bumper_' + i,
+      // position first on the -2 and second on the 2
+      position: [i % 2 === 0 ? bumperOffset * -1 : bumperOffset, -0.1, 0],
+    })
+    }
+    return instances
+  }, [])
+
+  useFrame((state, delta) => {
+    const duration = 0.5
+
+    if (!bumpersOn) {
+      rigidBumpers.current.map((instance, index) => {
+        instance.setTranslation({
+          x: instance.translation().x,
+          y: Math.max(instance.translation().y - delta * duration, -0.1),
+          z: instance.translation().z })
+      })
+
+      grid.current.position.y = Math.max(grid.current.position.y - delta * duration * 6, -2)
+    } else {
+      rigidBumpers.current.map((instance, index) => {
+        instance.setTranslation({ x: instance.translation().x,
+        y: Math.min(instance.translation().y + delta * duration, 0.2),
+        z: instance.translation().z })
+      })
+
+      grid.current.position.y = Math.min(grid.current.position.y + delta * duration * 6, -0.2)
+    }
+  })
+
+  return (
+    <group>
+      <group ref={ bumpersGroup } scale-z={ blocksCount } position-z={(blocksCount) / 2 * -4 - 2}>
+        <InstancedRigidBodies ref={ rigidBumpers } type="fixed" instances={ bumperIntances } restitution={ 1 }>
+          <instancedMesh args={[ null, null, bumpersCount ]} material={ materials.blueLight } geometry={ bumperGeometry } receiveShadow>
+          </instancedMesh>
+        </InstancedRigidBodies>
+        { bumpersOn && <RigidBody key={ bumpersOn } type="fixed" restitution={ 0.2 } friction={ 0 } colliders={ false }>
+          <CuboidCollider args={[ 2, 0.05, 2 ]} position={[ 0, -0.25, 0 ]}/>
+        </RigidBody>}
+      </group>
+      <Grid ref={ grid }
+        infiniteGrid={ true } 
+        position={[0, -2, 0]}
+        fadeDistance={ 60 }
+        fadeStrength={ 5 }
+        cellSize={ 0 }
+        sectionColor={ '#2B53E4' }
+        sectionSize={ 2 }
+        sectionThickness={ 1 }
+        followCamera={ true }
+        />
+    </group>
+  )
+}
