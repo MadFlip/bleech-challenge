@@ -2,6 +2,8 @@
 
 Marble race game made with R3F. It's inspired by the last lesson of the [Three.js Journey](https://threejs-journey.com/lessons/create-a-game-with-r3f) course.
 
+**[Play Game](https://madflip.github.io/bleech-challenge/)**
+
 
 ![screenshot](screenshot.png)
 
