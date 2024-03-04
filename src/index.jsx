@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import Experience from './Experience.jsx'
 import { KeyboardControls } from '@react-three/drei'
 import Interface from './interface.jsx'
+import { Suspense } from 'react'
 
 const root = ReactDOM.createRoot(document.querySelector('#root'))
 
@@ -14,7 +15,8 @@ root.render(
       { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
       { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
       { name: 'right', keys: ['ArrowRight', 'KeyD'] },
-      { name: 'jump', keys: ['Space'] }
+      { name: 'jump', keys: ['Space'] },
+      { name: 'restartKey', keys: ['KeyR', 'Enter']}
     ]}>
     <Canvas
       shadows
@@ -24,7 +26,9 @@ root.render(
           far: 200,
           position: [ 2.5, 4, 6 ]
       }}>
-      <Experience />
+        <Suspense fallback={null}>
+          <Experience />
+        </Suspense>
     </Canvas>
     <Interface />
   </KeyboardControls>

@@ -1,10 +1,11 @@
-import { useFrame, useLoader } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import { RigidBody, useRapier } from '@react-three/rapier'
 import { useKeyboardControls } from '@react-three/drei'
 import { useState, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import useGame from './stores/useGame'
 import { audio, playAudio } from './Audio'
+import { materials } from './Materials'
 
 export function Player() {
   const [ subscribeKeys, getKeys] = useKeyboardControls()
@@ -12,8 +13,6 @@ export function Player() {
   const { rapier, world } = useRapier()
   const [ smoothedCameraPosition ] = useState(() => new THREE.Vector3(10, 10, 10))
   const [ smoothedCameraTarget ] = useState(() => new THREE.Vector3())
-
-  const matcapTexture = useLoader(THREE.TextureLoader, './matcaps/DEE3E8_A6AEB5_BCC4CC_BCC4C4-512px.png')
 
   const start = useGame((state) => state.start)
   const end = useGame((state) => state.end)
@@ -73,6 +72,19 @@ export function Player() {
       start()
     })
 
+    const unsubscribeResetHealth = useGame.subscribe(
+      (state) => state.health,
+      (value) => {
+        if (value <= 0 &&
+          useGame.getState().phase === 'playing' &&
+          useGame.getState().difficulty === 'hard') {
+          setTimeout(() => {
+            restart()
+          }, 400)
+        }
+      }
+    )
+
     return () => {
       unsubscribeReset()
       unsubscribeJump()
@@ -80,12 +92,13 @@ export function Player() {
 
       unsubscribeMobileJump()
       unsubscribeMobileAnyKey()
+      unsubscribeResetHealth()
     }
   }, [sound])
 
   useFrame((state, delta) => {
     //  Keyboard controls of the player
-    const { forward, backward, left, right } = getKeys()
+    const { forward, backward, left, right, restartKey } = getKeys()
     // Gwet mobile controls states
     const altForward = useGame.getState().altForward
     const altBackward = useGame.getState().altBackward
@@ -146,12 +159,13 @@ export function Player() {
     }
 
     // if the player falls
-    if (bodyPosition.y < -4) {
+    if (bodyPosition.y < -4 || restartKey) {
       restart()
     }
   })
 
-  return <RigidBody ref={ body } 
+  return <RigidBody ref={ body }
+    name="player"
     canSleep={ false } 
     colliders="ball" 
     restitution={ 0.5 }
@@ -160,11 +174,8 @@ export function Player() {
     friction={ 1 } 
     position={[ 0, 1, 0]}
     >
-    <mesh castShadow>
+    <mesh castShadow material={ materials.white }>
       <icosahedronGeometry args={[0.3, 4]} />
-      <meshMatcapMaterial matcap={ matcapTexture }
-        flatShading 
-        toneMapped={ false } />
     </mesh>
   </RigidBody>
 }

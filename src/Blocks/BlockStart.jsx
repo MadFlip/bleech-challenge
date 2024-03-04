@@ -22,7 +22,7 @@ export default function BlockStart ({ position = [0, 0, 0] }) {
         textAlign={isMobile ? 'center' : 'right'}
         position={isMobile ? [ 0, 0.92, 0.5 ] : isDesktop ? [ 0.75, 0.75, 0 ] : [ 0.3, 0.75, 0 ]}
         rotation-y={isDesktop ? -0.5 : -0.25}
-        >Rolling Rush
+        >Warp Zone
           <meshBasicMaterial toneMapped={ false } />
         </Text>
     </Float>

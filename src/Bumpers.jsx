@@ -10,7 +10,7 @@ const bumperGeometry = new THREE.BoxGeometry(0.02, 0.195, 4)
 
 export default function Bumpers() {
   const blocksCount = useGame((state) => state.blocksCount)
-  const bumpersOn = useGame((state) => state.bumpersOn)
+  const bumpersOn = useGame((state) => state.difficulty === 'easy' ? true : false)
   const bumpersCount = 2
   const bumperOffset = 2 + 0.01
   const rigidBumpers = useRef()

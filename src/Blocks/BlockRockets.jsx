@@ -13,6 +13,7 @@ export default function BlockRockets ({ position = [0, 0, 0] }) {
   const [ speed ] = useState(() => (Math.random() + 0.5) * (Math.random() < 0.5 ? -1 : 1))
   const rotationDirection = speed > 0 ? -1 : 1
   const sound = useGame((state) => state.sound)
+  const decreaseHealth = useGame((state) => state.decreaseHealth)
 
   useFrame((state, delta) => {
     if (!obstacle.current) return
@@ -36,6 +37,7 @@ export default function BlockRockets ({ position = [0, 0, 0] }) {
     position={[ 0, 0.3, 0 ]} restitution={ 0.2 }
     friction={ 0 }
     onCollisionEnter={ () => playAudio(audio.hit, 0.75, false, sound)}
+    onCollisionExit={ (e) => (e.other.colliderObject.name === 'player') ? decreaseHealth(25) : null}
     >
     <group scale={1.25}>
       {/* Rocket Nose */}

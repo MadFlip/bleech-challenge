@@ -5,8 +5,22 @@ export default create(subscribeWithSelector((set) => {
   return {
     blocksCount: 12,
     blocksSeed: 0,
-    bumpersOn: false,
-    toggleBumpers: () => set((state) => ({ bumpersOn: !state.bumpersOn })),
+    difficulty: 'normal',
+     toggleDifficulty: () => {
+      set((state) => {
+        if (state.difficulty === 'normal') return { difficulty: 'hard' }
+        if (state.difficulty === 'hard') return { difficulty: 'easy' }
+        return { difficulty: 'normal' }
+      })
+    },
+    health: 100,
+    decreaseHealth:
+    (value) => {
+      set((state) => {
+        if (state.difficulty === 'hard') return { health: state.health - value }
+        return {}
+      })
+    },
 
     // Time
     startTime: 0,
@@ -30,7 +44,7 @@ export default create(subscribeWithSelector((set) => {
     },
     restart: () => {
       set((state) => {
-        if (state.phase === 'playing' || state.phase === 'ended') return { phase: 'ready', blocksSeed: Math.random(), finishSound: false, finishSoundPlayed: false}
+        if (state.phase === 'playing' || state.phase === 'ended') return { phase: 'ready', blocksSeed: Math.random(), finishSound: false, finishSoundPlayed: false, health: 100 }
         return {}
       })
     },

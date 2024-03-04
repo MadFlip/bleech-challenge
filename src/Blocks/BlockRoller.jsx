@@ -12,6 +12,7 @@ export default function BlockRoller ({ position = [0, 0, 0] }) {
   const { nodes } = useGLTF('./obstacle-1.glb')
   const [ timeOffset ] = useState(() => Math.random() * Math.PI * 2)
   const sound = useGame((state) => state.sound)
+  const decreaseHealth = useGame((state) => state.decreaseHealth)
 
   useFrame((state, delta) => {
     if (!obstacle.current) return
@@ -33,6 +34,7 @@ export default function BlockRoller ({ position = [0, 0, 0] }) {
     {/* Obstacle  */}
     <RigidBody ref={ obstacle }
       onCollisionEnter={ () => playAudio(audio.hit, 0.75, false, sound)}
+      onCollisionExit={ (e) => (e.other.colliderObject.name === 'player') ? decreaseHealth(25) : null}
       type="kinematicPosition" position={[ 0, 0.3, 0 ]} restitution={ 0.2 } friction={ 0 }>
       <group scale={1.4}>
         {/* Segment Blue Light */}
