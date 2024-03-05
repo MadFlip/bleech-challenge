@@ -68,8 +68,11 @@ export function Player() {
       }
     )
 
-    const unsubscribeAnyKey = subscribeKeys(() => {
-      start()
+    const unsubscribeAnyKey = subscribeKeys((state) => {
+      return state.forward || state.backward || state.left || state.right || state.jump
+    },
+    (value) => {
+      if (value) start()
     })
 
     const unsubscribeResetHealth = useGame.subscribe(

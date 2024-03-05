@@ -16,7 +16,7 @@ root.render(
       { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
       { name: 'right', keys: ['ArrowRight', 'KeyD'] },
       { name: 'jump', keys: ['Space'] },
-      { name: 'restartKey', keys: ['KeyR', 'Enter']}
+      { name: 'restartKey', keys: ['KeyR', 'Enter'] }
     ]}>
     <Canvas
       shadows
