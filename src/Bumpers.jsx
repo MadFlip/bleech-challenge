@@ -1,7 +1,7 @@
 import { CuboidCollider, InstancedRigidBodies, RigidBody } from '@react-three/rapier'
 import { useMemo, useRef } from 'react'
 import useGame from './stores/useGame'
-import { Grid } from '@react-three/drei'
+import { Grid, Instance, Instances } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { materials } from './Materials'
 import * as THREE from 'three'
@@ -15,6 +15,7 @@ export default function Bumpers() {
   const bumperOffset = 2 + 0.01
   const rigidBumpers = useRef()
   const bumpersGroup = useRef()
+  const bumpersVisual = useRef()
   const grid = useRef()
 
   const bumperIntances = useMemo(() => {
@@ -41,6 +42,7 @@ export default function Bumpers() {
       })
 
       grid.current.position.y = Math.max(grid.current.position.y - delta * duration * 6, -2)
+      bumpersVisual.current.position.y = Math.max(bumpersVisual.current.position.y - delta * duration, 0)
     } else {
       rigidBumpers.current.map((instance, index) => {
         instance.setTranslation({ x: instance.translation().x,
@@ -49,22 +51,41 @@ export default function Bumpers() {
       })
 
       grid.current.position.y = Math.min(grid.current.position.y + delta * duration * 6, -0.2)
+      bumpersVisual.current.position.y = Math.min(bumpersVisual.current.position.y + delta * duration, 0.3)
     }
   })
 
   return (
     <group>
       <group ref={ bumpersGroup } scale-z={ blocksCount } position-z={(blocksCount) / 2 * -4 - 2}>
-        <InstancedRigidBodies ref={ rigidBumpers } type="fixed" instances={ bumperIntances } restitution={ 1 }>
-          <instancedMesh args={[ null, null, bumpersCount ]} material={ materials.blueLight } geometry={ bumperGeometry } receiveShadow>
+        <InstancedRigidBodies includeInvisible={ true } ref={ rigidBumpers } type="fixed" instances={ bumperIntances } restitution={ 1 }>
+          <instancedMesh visible={ false } args={[ null, null, bumpersCount ]} geometry={ bumperGeometry }>
           </instancedMesh>
         </InstancedRigidBodies>
         { bumpersOn && <RigidBody key={ bumpersOn } type="fixed" restitution={ 0.2 } friction={ 0 } colliders={ false }>
           <CuboidCollider args={[ 2, 0.05, 2 ]} position={[ 0, -0.25, 0 ]}/>
         </RigidBody>}
       </group>
+      <Instances ref={ bumpersVisual } geometry={ bumperGeometry } material={ materials.blueLight } receiveShadow>
+        <Instance
+          position={[-2.01, -0.025, -4 * blocksCount / 2 - 2]}
+          scale={[1, 0.25, blocksCount]}
+        />
+        <Instance
+          position={[2.01, -0.025, -4 * blocksCount / 2 - 2]}
+          scale={[1, 0.25, blocksCount]}
+        />
+        <Instance
+          position={[-2.01, -0.175, -4 * blocksCount / 2 - 2]}
+          scale={[1, 0.25, blocksCount]}
+        />
+        <Instance
+          position={[2.01, -0.175, -4 * blocksCount / 2 - 2]}
+          scale={[1, 0.25, blocksCount]}
+        />
+      </Instances>
       <Grid ref={ grid }
-        infiniteGrid={ true } 
+        infiniteGrid={ true }
         position={[0, -2, 0]}
         fadeDistance={ 60 }
         fadeStrength={ 5 }

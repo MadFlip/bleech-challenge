@@ -16,7 +16,7 @@ export default function BlockStart ({ position = [0, 0, 0] }) {
     <Float floatIntensity={ 0.25 } rotationIntensity={ 0.5 }>
       <Text
         font='./fonts/bebas-neue-v9-latin-regular.woff'
-        scale={ isMobile ? 0.2 : isDesktop ? 0.4 : 0.25 }
+        scale={ isMobile ? 0.18 : isDesktop ? 0.4 : 0.25 }
         maxWidth={ 0.25 }
         lineHeight={ 0.95 }
         textAlign={isMobile ? 'center' : 'right'}

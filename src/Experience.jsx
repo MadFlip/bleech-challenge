@@ -6,7 +6,7 @@ import { Physics } from '@react-three/rapier'
 import useGame from './stores/useGame.jsx'
 import { ToneMapping, EffectComposer, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
-import { Perf } from 'r3f-perf'
+// import { Perf } from 'r3f-perf'
 
 export default function Experience()
 {

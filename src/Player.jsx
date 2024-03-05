@@ -158,6 +158,13 @@ export function Player() {
       end()
     }
 
+    if (bodyPosition.y < -1 &&
+      bodyPosition.y > -4 &&
+      useGame.getState().phase === 'playing' &&
+      useGame.getState().difficulty === 'hard') {
+        useGame.setState({ health: 0 })
+    }
+
     // if the player falls
     if (bodyPosition.y < -4 || restartKey) {
       restart()

@@ -6,6 +6,21 @@
   src: url('../fonts/bebas-neue-v9-latin-regular.woff') format('woff');
 }
 
+html {
+  box-sizing: border-box;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+}
+
 html,
 body,
 #root
@@ -50,7 +65,7 @@ body,
   font-size: 45px;
   position: absolute;
   top: 35px;
-  left: 30px;
+  left: 20px;
   transform: skew(3deg, 3deg) rotate(3deg);
   transform-origin: 0 0;
 
@@ -77,8 +92,8 @@ body,
 .sound {
   pointer-events: auto;
   position: absolute;
-  right: 30px;
-  top: 30px;
+  right: 20px;
+  top: 28px;
   transform: skew(-3deg, -3deg) rotate(-3deg);
   transform-origin: 100% 0;
   font-size: 28px;
@@ -89,7 +104,6 @@ body,
   @media (min-width: 768px) {
     font-size: 44px;
     right: 40px;
-    top: 40px;
   }
 
   &-state {
@@ -129,7 +143,7 @@ body,
 .difficulty {
   pointer-events: auto;
   position: absolute;
-  right: 30px;
+  right: 20px;
   top: 95px;
   font-size: 28px;
   line-height: 1;
@@ -142,7 +156,7 @@ body,
   @media (min-width: 768px) {
     font-size: 44px;
     right: 40px;
-    top: 140px;
+    top: 128px;
   }
 
   @media (hover: hover) {
@@ -156,8 +170,8 @@ body,
 
 .health {
   animation: fadeIn 0.3s ease both;
-  height: 5px;
-  width: calc(100% - 62px);
+  height: 6px;
+  width: calc(100% - 40px);
   left: 50%;
   transform: translateX(-50%);
   transform-origin: 50% 0;
@@ -167,7 +181,9 @@ body,
   overflow: hidden;
 
   @media (min-width: 768px) {
+    border: 2px solid #ffffff;
     height: 30px;
+    padding: 2px;
     top: 40px;
     transform: translateX(-50%) rotateX(-16deg);
     width: 30%;
@@ -287,7 +303,7 @@ body,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 20px;
     right: 0;
     left: 0;
     width: auto;
