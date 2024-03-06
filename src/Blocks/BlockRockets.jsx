@@ -41,17 +41,17 @@ export default function BlockRockets ({ position = [0, 0, 0] }) {
     >
     <group scale={1.25}>
       {/* Rocket Nose */}
-      <Instances range={ 2 } geometry={ nodes.rocketNose.geometry }   material={ materials.blueLight }>
+      <Instances range={ 2 } geometry={ nodes.rocketNose.geometry } material={ materials.blueLight } castShadow>
         <Instance position={[1, 0, 0]} rotation={[0, Math.PI / 2 * rotationDirection, 0]}/>
         <Instance position={[-1, 0, 0]} rotation={[0, Math.PI / -2 * rotationDirection, 0]}/>
       </Instances>
       {/* Rocket Body */}
-      <Instances range={ 2 } geometry={ nodes.rocketBody.geometry }   material={ materials.blue }>
+      <Instances range={ 2 } geometry={ nodes.rocketBody.geometry } material={ materials.blue } castShadow>
         <Instance position={[1, 0, 0]} rotation={[0, Math.PI / 2 * rotationDirection, 0]}/>
         <Instance position={[-1, 0, 0]} rotation={[0, Math.PI / -2 * rotationDirection, 0]}/>
       </Instances>
       {/* Rocket Tail */}
-      <Instances range={ 2 } geometry={ nodes.rocketTail.geometry }   material={ materials.aqua }>
+      <Instances range={ 2 } geometry={ nodes.rocketTail.geometry } material={ materials.aqua } castShadow>
         <Instance position={[1, 0, 0]} rotation={[0, Math.PI / 2 * rotationDirection, 0]}/>
         <Instance position={[-1, 0, 0]} rotation={[0, Math.PI / -2 * rotationDirection, 0]}/>
       </Instances>

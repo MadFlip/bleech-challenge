@@ -28,6 +28,7 @@ export default function Interface() {
     const toggleSound = useGame((state) => state.toggleSound)
     const difficulty = useGame((state) => state.difficulty)
     const toggleDifficulty = useGame((state) => state.toggleDifficulty)
+    const defaultBestTime = useGame((state) => state.bestTime)
 
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -94,7 +95,7 @@ export default function Interface() {
 
     return <div className={`interface ${isLoaded ? 'interface--isReady' : ''}`}>
       <div className="time">
-        <div className="time-best" ref={ bestTime }>Best: 0.00</div>
+        <div className="time-best" ref={ bestTime }>Best: { defaultBestTime }</div>
         <div className="time-active" ref={ timer }>0.00</div>
       </div>
       <div className="sound" onClick={() => toggleSound()}>
