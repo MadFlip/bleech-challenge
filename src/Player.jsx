@@ -166,6 +166,7 @@ export function Player() {
       end()
     }
 
+    // if the player falls in hard mode set health to 0
     if (bodyPosition.y < -1 &&
       bodyPosition.y > -4 &&
       useGame.getState().phase === 'playing' &&
