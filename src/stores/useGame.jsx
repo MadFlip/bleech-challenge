@@ -7,6 +7,11 @@ export default create(subscribeWithSelector((set) => {
   const score = url.searchParams.get('score')
   let levelBlocks = []
   let levelLimit = 20
+  
+  function decryptScore(score) {
+    // Decode the base64 score and then convert it back to a number
+    return parseInt(atob(score), 10);
+  }
 
   if (level) {
     const levelSanitized = level.replace(/[^A-F]/g, '')
@@ -20,7 +25,8 @@ export default create(subscribeWithSelector((set) => {
 
   let scoreSanitized = '0.00'
   if (score) {
-    scoreSanitized = score.replace(/[^0-9]/g, '')
+    const decryptedScore = decryptScore(score).toString()
+    scoreSanitized = decryptedScore.replace(/[^0-9]/g, '')
     // convert to seconds and 2 decimal places
     scoreSanitized = (scoreSanitized / 1000).toFixed(2)
     // limit max length to 6
@@ -34,7 +40,7 @@ export default create(subscribeWithSelector((set) => {
     blocksSeed: 0,
     level: level && levelBlocks.length ? levelBlocks : null,
     difficulty: 'normal',
-      toggleDifficulty: () => {
+    toggleDifficulty: () => {
       set((state) => {
         if (state.difficulty === 'normal') return { difficulty: 'hard' }
         if (state.difficulty === 'hard') return { difficulty: 'easy' }
@@ -78,7 +84,7 @@ export default create(subscribeWithSelector((set) => {
     },
     end: () => {
       set((state) => {
-        if (state.phase === 'playing') return { phase: 'ended', endTime: Date.now(), finishSound: true}
+        if (state.phase === 'playing') return { phase: 'ended', endTime: Date.now(), finishSound: true }
         return {}
       })
     },

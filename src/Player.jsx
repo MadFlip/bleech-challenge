@@ -156,6 +156,11 @@ export function Player() {
     state.camera.lookAt(smoothedCameraTarget)
 
     // Phases
+    // fallback fix start if on restart player still keep pressing the key
+    if (useGame.getState().phase === 'ready' && bodyPosition.z < 0) {
+      start()
+    }
+
     // reach the end of the level
     if (bodyPosition.z < -(blocksCount * 4 + 2)) {
       end()

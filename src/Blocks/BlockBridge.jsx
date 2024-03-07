@@ -18,7 +18,7 @@ export default function BlockBridge ({ position = [0, 0, 0], alignment = 'random
   }
 
   const xPosition = alignment
-
+  
   return <group position={ position }>
     {/* Floor */}
     <RigidBody type="fixed" restitution={ 0.2 } friction={ 0 }

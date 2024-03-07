@@ -63,27 +63,43 @@ export default function Interface() {
     const stopRight = () => useGame.setState({ altRight: false })
     const moveBackward = () => useGame.setState({ altBackward: true })
     const stopBackward = () => useGame.setState({ altBackward: false })
+    
+    function encryptScore(score) {
+      // Convert the score to a string and then encode it as base64
+      return btoa(score.toString());
+    }
 
     useEffect(() => {
       setIsLoaded(true)
       const unsubscribeEffect = addEffect(() => {
         const state = useGame.getState()
         let elapsedTime = 0
+        let endTimeMs = 0
 
         if (state.phase === 'playing') {
           elapsedTime = (Date.now() - state.startTime)
         } else if (state.phase === 'ended') {
           elapsedTime = (state.endTime - state.startTime)
+          endTimeMs = elapsedTime
         }
         elapsedTime /= 1000
         elapsedTime = elapsedTime.toFixed(2)
         
         if (timer.current) {
           timer.current.textContent = elapsedTime
+
           // Update best time
           if (state.phase === 'ended' && (elapsedTime * 1 < state.bestTime * 1 || state.bestTime * 1 === 0)) {
             bestTime.current.textContent = `Best: ${elapsedTime}`
             useGame.setState({ bestTime: elapsedTime })
+
+            // encrypt and save the best time in the URL
+            const encryptedScore = encryptScore(endTimeMs)
+            const url = new URL(window.location.href)
+            url.searchParams.set('score', encryptedScore)
+            window.history.pushState({}, '', decodeURIComponent(url))
+
+            // get 
           }
         }
       })

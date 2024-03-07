@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import Bumpers from './Bumpers.jsx'
 import BlockStart from './Blocks/BlockStart.jsx'
 import BlockEnd from './Blocks/BlockEnd.jsx'
@@ -16,10 +16,8 @@ export function Level({ count = 5, types = [
   BlockBridge
   ], seed = 0}) {
   const level = useGame((state) => state.level)
-
   const blocks = useMemo(() => {
     const blocks = []
-
     if (level) {
       level.forEach((letter, index) => {
         if (letter === 'A') {
@@ -42,17 +40,36 @@ export function Level({ count = 5, types = [
         blocks.push(type)
       }
     }
-    
+
     return blocks
-  }, [ count, types, seed])
+  }, [ count, types, seed ])
+
+  let currentLevel = []
+  let bridgePosition = 0
+  useEffect(() => {
+    bridgePosition = [-1.5, 0, 1.5][Math.floor(Math.random() * 3)]
+    // go through the blocks and add the letter to the level
+    blocks.forEach((Block, index) => {
+      if (Block === BlockHammer) {
+        currentLevel.push('A')
+      } else if (Block === BlockRoller) {
+        currentLevel.push('B')
+      } else if (Block === BlockRockets) {
+        currentLevel.push('C')
+      } else if (Block === BlockBridge) {
+        currentLevel.push('D')
+      }
+    })
+
+    console.log(bridgePosition)
+  }, [seed])
 
   return <>
     <Bumpers />
     <BlockStart position={[0, 0, 0]}/>
     {blocks.map((Block, index) => {
       return <Block key={index} position={[0, 0, -(index + 1) * 4 ]}
-        {...Block.name === 'BlockBridge' &&
-        { alignment: level[index] === 'E' ? 'left' : level[index] === 'F' ? 'right' : 'center' }}
+      alignment={ level ? (level[index] === 'E' ? 'left' : level[index] === 'F' ? 'right' : 'center' ) : 'random'}
       />
     })}
     <BlockEnd position={[0, 0, -(count + 1) * 4]}/>
