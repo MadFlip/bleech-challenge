@@ -51,7 +51,7 @@ export function Level({ count = 5, types = [
     <BlockStart position={[0, 0, 0]}/>
     {blocks.map((Block, index) => {
       return <Block key={index} position={[0, 0, -(index + 1) * 4 ]}
-        alignment={ level && (level[index] === 'E' ? 'left' : level[index] === 'F' ? 'right' : 'center') }
+        alignment={ level ? (level[index] === 'E' ? 'left' : level[index] === 'F' ? 'right' : 'center') : 'random' }
       />
     })}
     <BlockEnd position={[0, 0, -(count + 1) * 4]}/>
