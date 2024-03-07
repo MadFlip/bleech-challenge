@@ -5,7 +5,7 @@ import useGame from '../stores/useGame'
 import { useFrame } from '@react-three/fiber'
 import { audio, playAudio } from '../Audio'
 import * as THREE from 'three'
-import { boxGeometry, materials } from '../Materials'
+import { boxGeometry, materials } from '../materials'
 
 export default function BlockRoller ({ position = [0, 0, 0] }) {
   const obstacle = useRef()

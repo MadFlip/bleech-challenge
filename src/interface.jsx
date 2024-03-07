@@ -4,6 +4,13 @@ import { useRef, useEffect, useState } from 'react'
 import { addEffect } from '@react-three/fiber'
 import { audio, playAudio } from './Audio.jsx'
 
+function encryptScore(score) {
+  // score to ms
+  score = Number(score) * 1000 || 0
+  // Convert the score to a string and then encode it as base64
+  return btoa(score.toString());
+}
+
 export default function Interface() {
     const restart = useGame((state) => state.restart)
     const phase = useGame((state) => state.phase)
@@ -29,8 +36,13 @@ export default function Interface() {
     const difficulty = useGame((state) => state.difficulty)
     const toggleDifficulty = useGame((state) => state.toggleDifficulty)
     const defaultBestTime = useGame((state) => state.bestTime)
-
+    const levelCode = useGame((state) => state.levelCode)
     const [isLoaded, setIsLoaded] = useState(false)
+    
+    let currentURL = new URL(window.location.href)
+    currentURL.searchParams.set('level', levelCode)
+    currentURL.searchParams.set('score', encryptScore(defaultBestTime))
+    currentURL = decodeURIComponent(currentURL)
 
     // Play background sound, listen to sound on/off changes
     useEffect(() => {
@@ -63,24 +75,17 @@ export default function Interface() {
     const stopRight = () => useGame.setState({ altRight: false })
     const moveBackward = () => useGame.setState({ altBackward: true })
     const stopBackward = () => useGame.setState({ altBackward: false })
-    
-    function encryptScore(score) {
-      // Convert the score to a string and then encode it as base64
-      return btoa(score.toString());
-    }
 
     useEffect(() => {
       setIsLoaded(true)
       const unsubscribeEffect = addEffect(() => {
         const state = useGame.getState()
         let elapsedTime = 0
-        let endTimeMs = 0
 
         if (state.phase === 'playing') {
           elapsedTime = (Date.now() - state.startTime)
         } else if (state.phase === 'ended') {
           elapsedTime = (state.endTime - state.startTime)
-          endTimeMs = elapsedTime
         }
         elapsedTime /= 1000
         elapsedTime = elapsedTime.toFixed(2)
@@ -92,14 +97,6 @@ export default function Interface() {
           if (state.phase === 'ended' && (elapsedTime * 1 < state.bestTime * 1 || state.bestTime * 1 === 0)) {
             bestTime.current.textContent = `Best: ${elapsedTime}`
             useGame.setState({ bestTime: elapsedTime })
-
-            // encrypt and save the best time in the URL
-            const encryptedScore = encryptScore(endTimeMs)
-            const url = new URL(window.location.href)
-            url.searchParams.set('score', encryptedScore)
-            window.history.pushState({}, '', decodeURIComponent(url))
-
-            // get 
           }
         }
       })
@@ -129,6 +126,9 @@ export default function Interface() {
         <span className='health-level' style={{ transform: `scaleX(${health / 100})` }}></span>
       </div>}
       {phase === 'ended' && <div className="restart" onClick={ restart }>Restart</div>}
+      {phase === 'ended' && <div className="shareLevel">
+          { currentURL.toString() }
+        </div>}
 
       <div className="controls">
         <div className="left">

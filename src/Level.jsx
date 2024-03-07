@@ -5,16 +5,19 @@ import BlockEnd from './Blocks/BlockEnd.jsx'
 import BlockHammer from './Blocks/BlockHammer.jsx'
 import BlockRockets from './Blocks/BlockRockets.jsx'
 import BlockRoller from './Blocks/BlockRoller.jsx'
-import BlockBridge from './Blocks/BlockBridge.jsx'
+import BlockBridgeLeft from './Blocks/BlockBridgeLeft.jsx'
+import BlockBridgeRight from './Blocks/BlockBridgeRight.jsx'
+import BlockBridgeCenter from './Blocks/BlockBridgeCenter.jsx'
 import useGame from './stores/useGame.jsx'
 
-export function Level({ count = 5, types = [
+export function Level({ count = 6, types = [
   BlockHammer,
   BlockRoller,
-  BlockBridge,
   BlockRockets,
-  BlockBridge
-  ], seed = 0}) {
+  BlockBridgeLeft,
+  BlockBridgeRight,
+  BlockBridgeCenter
+], seed = 0}) {
   const level = useGame((state) => state.level)
   const blocks = useMemo(() => {
     const blocks = []
@@ -27,11 +30,11 @@ export function Level({ count = 5, types = [
         } else if (letter === 'C') {
           blocks.push(BlockRockets)
         } else if (letter === 'D') {
-          blocks.push(BlockBridge)
+          blocks.push(BlockBridgeLeft)
         } else if (letter === 'E') {
-          blocks.push(BlockBridge)
+          blocks.push(BlockBridgeCenter)
         } else if (letter === 'F') {
-          blocks.push(BlockBridge)
+          blocks.push(BlockBridgeRight)
         }
       })
     } else {
@@ -45,9 +48,8 @@ export function Level({ count = 5, types = [
   }, [ count, types, seed ])
 
   let currentLevel = []
-  let bridgePosition = 0
+  const setLevelCode = useGame((state) => state.setLevelCode)
   useEffect(() => {
-    bridgePosition = [-1.5, 0, 1.5][Math.floor(Math.random() * 3)]
     // go through the blocks and add the letter to the level
     blocks.forEach((Block, index) => {
       if (Block === BlockHammer) {
@@ -56,21 +58,22 @@ export function Level({ count = 5, types = [
         currentLevel.push('B')
       } else if (Block === BlockRockets) {
         currentLevel.push('C')
-      } else if (Block === BlockBridge) {
+      } else if (Block === BlockBridgeLeft) {
         currentLevel.push('D')
+      } else if (Block === BlockBridgeCenter) {
+        currentLevel.push('E')
+      } else if (Block === BlockBridgeRight) {
+        currentLevel.push('F')
       }
     })
-
-    console.log(bridgePosition)
+    setLevelCode(currentLevel.join(''))
   }, [seed])
 
   return <>
     <Bumpers />
     <BlockStart position={[0, 0, 0]}/>
     {blocks.map((Block, index) => {
-      return <Block key={index} position={[0, 0, -(index + 1) * 4 ]}
-        alignment={ level ? (level[index] === 'E' ? 'left' : level[index] === 'F' ? 'right' : 'center') : 'random' }
-      />
+      return <Block key={index} position={[0, 0, -(index + 1) * 4 ]} />
     })}
     <BlockEnd position={[0, 0, -(count + 1) * 4]}/>
   </>

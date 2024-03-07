@@ -1,7 +1,7 @@
 import { InstancedRigidBodies } from '@react-three/rapier'
 import { useMemo } from 'react'
 import useGame from './stores/useGame'
-import { materials } from './Materials'
+import { materials } from './materials'
 
 export default function Confetti() {
   const gameEnded = useGame((state) => state.phase) === 'ended'

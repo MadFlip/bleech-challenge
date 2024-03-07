@@ -1,6 +1,6 @@
 import { Float, Text } from '@react-three/drei'
 import { RigidBody } from '@react-three/rapier'
-import { boxGeometry, materials } from '../Materials'
+import { boxGeometry, materials } from '../materials'
 
 export default function BlockStart ({ position = [0, 0, 0] }) {
   const isMobile = window.matchMedia('(max-width: 560px)').matches

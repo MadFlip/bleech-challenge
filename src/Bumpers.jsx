@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react'
 import useGame from './stores/useGame'
 import { Grid, Instance, Instances } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { materials } from './Materials'
+import { materials } from './materials'
 import * as THREE from 'three'
 
 const bumperGeometry = new THREE.BoxGeometry(0.02, 0.195, 4)

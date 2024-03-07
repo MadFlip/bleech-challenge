@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import useGame from './stores/useGame'
 import { audio, playAudio } from './Audio'
-import { materials } from './Materials'
+import { materials } from './materials'
 
 export function Player() {
   const [ subscribeKeys, getKeys] = useKeyboardControls()
@@ -100,6 +100,7 @@ export function Player() {
   }, [sound])
 
   useFrame((state, delta) => {
+    const levelCode = useGame.getState().levelCode
     //  Keyboard controls of the player
     const { forward, backward, left, right, restartKey } = getKeys()
     // Gwet mobile controls states

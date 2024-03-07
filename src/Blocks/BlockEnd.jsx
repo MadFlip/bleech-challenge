@@ -4,7 +4,7 @@ import { Float, Text, useGLTF } from '@react-three/drei'
 import { CuboidCollider, RigidBody } from '@react-three/rapier'
 import { useFrame, useLoader } from '@react-three/fiber'
 import Confetti from '../Confetti'
-import { boxGeometry, materials } from '../Materials'
+import { boxGeometry, materials } from '../materials'
 
 export default function BlockEnd ({ position = [0, 0, 0] }) {
   const flyntRef = useRef()
